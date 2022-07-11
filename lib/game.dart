@@ -71,7 +71,11 @@ class _GameState extends State<Game> {
 
 
   _DisplayWord(){
-    return display.toString();
+    var displayList = display.toString();
+    var trimedString = displayList.substring(0, displayList.length-1);
+    var trimedString2 = trimedString.substring(1);
+    var finalString = trimedString2.replaceAll(',', '');
+    return finalString;
   }
 
   Widget _Keys(int index, List<String> letters){
@@ -99,7 +103,7 @@ class _GameState extends State<Game> {
     if(correctLetters.contains(letter)){
       int correctIndex = correctLetters.indexOf(letter);
       setState((){
-        display[correctIndex] = letter;
+        display[correctIndex] = letter+" ";
       });
     } 
   }

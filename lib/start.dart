@@ -23,7 +23,6 @@ class Start extends StatelessWidget {
                     ),
                 ),
 
-
                 Expanded(
                   flex: 3,
                   child: Column(
