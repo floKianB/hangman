@@ -10,11 +10,12 @@ class _GameState extends State<Game> {
   int wrongCounter = 0;
   List<String> correctLetters = [];
   List<String> display = [];
+  String word = '';
   @override
   _GameState(){
     super.initState();
-    String word = _GetWord();
-    display = List<String>.filled(word.length , '__ ');
+    word = _GetWord();
+    display = List<String>.filled(word.length , '_');
     correctLetters = [...word.split('')];
     }
   
@@ -31,7 +32,7 @@ class _GameState extends State<Game> {
                   child: Center(
                     child: Image(
                       fit: BoxFit.contain,
-                      image: AssetImage("images/6.png"),
+                      image: AssetImage("images/$wrongCounter.png"),
                     ),
                   ),
                 ),
@@ -40,8 +41,8 @@ class _GameState extends State<Game> {
                     child: Text(
                       _DisplayWord(),
                       style: TextStyle(
-                        fontSize: 45,
-                        color: Colors.white,
+                        fontSize: 50,
+                        color: !display.contains('_') ? Colors.green : wrongCounter >= 6 ? Colors.red : Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -71,18 +72,23 @@ class _GameState extends State<Game> {
 
 
   _DisplayWord(){
-    var displayList = display.toString();
-    var trimedString = displayList.substring(0, displayList.length-1);
-    var trimedString2 = trimedString.substring(1);
-    var finalString = trimedString2.replaceAll(',', '');
-    return finalString;
+    if(wrongCounter < 6){
+      return display.toString().substring(0, display.toString().length-1).substring(1).replaceAll(',', '');
+    } else {
+      return correctLetters.toString().substring(0, correctLetters.toString().length-1).substring(1).replaceAll(',', '');
+    }
   }
+
+
 
   Widget _Keys(int index, List<String> letters){
     return (
       ElevatedButton(
+        onPressed: wrongCounter >= 6 ? (){} : ((){
+          _CheckLetter(letters[index]);
+        }),
         style: ElevatedButton.styleFrom(
-          primary: Colors.white,
+          primary: !display.contains('_') ? Colors.green[400] : wrongCounter >= 6 ? Colors.red[400]: Colors.white,
         ),
         child: Text(
           letters[index],
@@ -92,24 +98,43 @@ class _GameState extends State<Game> {
             fontWeight: FontWeight.w600,
           ),
           ),
-        onPressed: ((){
-          _CheckLetter(letters[index]);
-        })
+
       )
     );
   }
 
-  void _CheckLetter(letter){
-    if(correctLetters.contains(letter)){
-      int correctIndex = correctLetters.indexOf(letter);
+  void _CheckLetter(selectedLetter){
+    List<int> correctIndexLetters = [];
+    int wrongCountes = wrongCounter;
+
+    for(int i = 0; i < correctLetters.length; i++){
+      if(selectedLetter == correctLetters[i]){
+        correctIndexLetters.add(i);
+      } 
+    }
+    
+    List<String> sample = display;
+    for(int i = 0; i < correctIndexLetters.length ; i++){
+      sample[correctIndexLetters[i]] = selectedLetter;
+    }
+
+    if(correctLetters.contains(selectedLetter) == false){
+      wrongCountes++;
       setState((){
-        display[correctIndex] = letter+" ";
+        display = sample;
+        wrongCounter = wrongCountes;
       });
-    } 
+    }
+
+    setState((){
+      display = sample;
+    });
+
+
   }
 
 
   String _GetWord(){
-    return "KIAN";
+    return "APPLE";
   }
 }
