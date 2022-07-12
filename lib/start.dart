@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import './game.dart';
 
-class Start extends StatelessWidget {
+class Start extends StatefulWidget {
   const Start({Key? key}) : super(key: key);
 
+  @override
+  State<Start> createState() => _StartState();
+}
+
+class _StartState extends State<Start> {
+  String selectedWord = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,82 +30,35 @@ class Start extends StatelessWidget {
                 ),
 
                 Expanded(
-                  flex: 3,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-                      minimumSize: Size(200, 30),
-                      primary: Colors.green[300],
-                      side: BorderSide(width: 3, color: Colors.white),
-                    ),
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Game() )
-                      );
-                    },
+                  flex: 1,
+                  child: Center(
                     child: Text(
-                      "Easy",
+                      selectedWord,
                       style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.blue[900],
-                        fontWeight: FontWeight.w600
+                        fontSize: 45,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
-                      ),
-                  ),
-
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-                      minimumSize: Size(200, 30), 
-                      primary: Colors.yellow[400],
-                      side: BorderSide(width: 3, color: Colors.white),
                     ),
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Game() )
-                      );
-                    },
-                    child: Text(
-                      "Medium",
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.blue[900],
-                        fontWeight: FontWeight.w600
-                      ),
-                      ),
-                  ),
-
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-                      minimumSize: Size(200, 30),
-                      primary: Colors.red[300],
-                      side: BorderSide(width: 3, color: Colors.white),
-                    ),
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Game() )
-                      );
-                    },
-                    child: Text(
-                      "Hard",
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.blue[900],
-                        fontWeight: FontWeight.w600
-                      ),
-                      ),
-                  ),
-                    ]
                   ),
                 ),
-                
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
+                    child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7,
+                      mainAxisSpacing: 10.0,
+                      crossAxisSpacing: 10.0,
+                    ),
+                    itemCount: 28,
+                    itemBuilder: (BuildContext context, index){
+                        const List<String> letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '<', '✔️'];
+                      return _Keys(index, letters);
+                    })
+                  ),
+                ),
               ],
             ),
           ),
@@ -107,5 +66,40 @@ class Start extends StatelessWidget {
       );
   }
 
+    Widget _Keys(int index, List<String> letters){
+    return (
+      ElevatedButton(
+        onPressed: (){
+          if(letters[index] == '<'){
+            setState((){
+              selectedWord = selectedWord.length != 0 ? selectedWord.substring(0, selectedWord.length-1) : selectedWord;
+            });
+          } else if (letters[index] == '✔️') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Game(word: "KIAN") )
+              );
 
+          } else {
+            setState((){
+              selectedWord += letters[index];
+            });
+          }
+          
+        },
+        style: ElevatedButton.styleFrom(
+          primary: Colors.white,
+        ),
+        child: Text(
+          letters[index],
+          style: TextStyle(
+            color: Colors.blue[900],
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+          ),
+
+      )
+    );
+  }
 }
